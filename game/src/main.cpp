@@ -55,12 +55,15 @@ int main()
     paddle1_position.y = paddle2_position.y = CENTER.y;
 
     int test_score = 0;
+	int p1_score = 0;
+	int p2_score = 0;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pong");
     InitAudioDevice();
     SetTargetFPS(60);
 
     Sound coin = LoadSound("./assets/audio/sound_coin.mp3");
+	Sound hit = LoadSound("./assets/audio/sound_hit.mp3");
 
     while (!WindowShouldClose())
     {
@@ -72,8 +75,13 @@ int main()
         if (IsKeyDown(KEY_S))
             paddle1_position.y += PADDLE_SPEED * dt;
 
-        // Mirror paddle 1 for now
-        paddle2_position.y = paddle1_position.y;
+        if (IsKeyDown(KEY_UP))
+            paddle2_position.y -= PADDLE_SPEED * dt;
+        if (IsKeyDown(KEY_DOWN))
+            paddle2_position.y += PADDLE_SPEED * dt;
+
+        // Mirror paddle 1 for nowe
+        //paddle2_position.y = paddle1_position.y;
 
         float phh = PADDLE_HEIGHT * 0.5f;
         paddle1_position.y = Clamp(paddle1_position.y, phh, SCREEN_HEIGHT - phh);
@@ -86,11 +94,19 @@ int main()
         Rectangle paddle2_rec = PaddleRec(paddle2_position);
 
         // TODO -- increment the scoring player's score after they've touched the ball and the ball goes too far right/left
-        test_score++;
-        if (ball_rec.x <= 0.0f || ball_rec.x + ball_rec.width >= SCREEN_WIDTH)
+        //test_score++;
+        if (ball_rec.x <= 0.0f)
         {
             ball_direction.x *= -1.0f;
+            p2_score++;
+            PlaySound(hit);
         }
+        if (ball_rec.x + ball_rec.width >= SCREEN_WIDTH)
+		{
+			ball_direction.x *= -1.0f;
+			p1_score++;
+            PlaySound(hit);
+		}
         if (ball_rec.y <= 0.0f || ball_rec.y + ball_rec.height >= SCREEN_HEIGHT)
         {
             ball_direction.y *= -1.0f;
@@ -112,9 +128,28 @@ int main()
 
         // Text format requires you to put a '%i' wherever you want an integer, then add said integer after the comma
         const char* test_score_text = TextFormat("Test Score: %i ", test_score);
+        const char* p1_score_text = TextFormat("Player 1 Score: %i ", p1_score);
+        const char* p2_score_text = TextFormat("Player 2 Score: %i ", p2_score);
 
         // We can measure our text for more exact positioning. This puts our score in the center of our screen!
-        DrawText(test_score_text, SCREEN_WIDTH * 0.5f - MeasureText(test_score_text, 20) * 0.5f, 50, 20, BLUE);
+        //DrawText(test_score_text, SCREEN_WIDTH * 0.5f - MeasureText(test_score_text, 20) * 0.5f, 50, 20, BLUE);
+        //Player Scores
+        DrawText(p1_score_text, SCREEN_WIDTH * 0.5f - MeasureText(p1_score_text, 20) * 0.5f, 50, 20, BLUE);
+        DrawText(p2_score_text, SCREEN_WIDTH * 0.5f - MeasureText(p2_score_text, 20) * 0.5f, 75, 20, BLUE);
+
+		if (p1_score >= 5)
+		{
+			ball_direction.x = 0.0f;
+			ball_direction.y = 0.0f;
+			DrawText("Player 1 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 1 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.5f - 20, 50, GREEN);
+		}
+		else if (p2_score >= 5)
+		{
+            ball_direction.x = 0.0f;
+            ball_direction.y = 0.0f;
+			DrawText("Player 2 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 2 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.5f - 20, 50, GREEN);
+		}
+
         EndDrawing();
     }
 
