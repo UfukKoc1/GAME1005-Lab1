@@ -100,12 +100,14 @@ int main()
             ball_direction.x *= -1.0f;
             p2_score++;
             PlaySound(hit);
+            ResetBall(ball_position, ball_direction);
         }
         if (ball_rec.x + ball_rec.width >= SCREEN_WIDTH)
 		{
 			ball_direction.x *= -1.0f;
 			p1_score++;
             PlaySound(hit);
+            ResetBall(ball_position, ball_direction);
 		}
         if (ball_rec.y <= 0.0f || ball_rec.y + ball_rec.height >= SCREEN_HEIGHT)
         {
@@ -141,13 +143,13 @@ int main()
 		{
 			ball_direction.x = 0.0f;
 			ball_direction.y = 0.0f;
-			DrawText("Player 1 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 1 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.5f - 20, 50, GREEN);
+			DrawText("Player 1 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 1 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.4f - 20, 50, GREEN);
 		}
 		else if (p2_score >= 5)
 		{
             ball_direction.x = 0.0f;
             ball_direction.y = 0.0f;
-			DrawText("Player 2 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 2 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.5f - 20, 50, GREEN);
+			DrawText("Player 2 Victory!", SCREEN_WIDTH * 0.5f - MeasureText("Player 2 Victory!", 50) * 0.5f, SCREEN_HEIGHT * 0.4f - 20, 50, GREEN);
 		}
 
         EndDrawing();
